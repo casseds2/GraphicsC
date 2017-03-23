@@ -10,7 +10,10 @@ void display(void)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(0.0,1.0,1.0,0.3,0.0,0.0,1.0,0.0,0.0); //changing 4th value will bring it towards the view plain(or outsde of it)
+	gluLookAt(0.0,1.0,1.0,0.0,0.0,0.0,1.0,0.0,0.0); //changing 4th value will bring it towards the view plain(or outsde of it)
+													//changing 5th value will tilt the image to the right amd shift right?
+													//6th value does opposite to th value
+													//Not sure about 7th value, doesn't change much until set to 0
 
 	glutWireCube(0.5);
 	
