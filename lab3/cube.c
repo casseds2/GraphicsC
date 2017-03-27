@@ -10,10 +10,14 @@ void display(void)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslatef(0.0, 0.0, -2.0);
+
 	gluLookAt(0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0);
 
-	glutWireSphere(2, 75, 75);
+	glTranslatef(0.0, 0.0, -2.0);
+	glRotatef(5, 1, 1, 0); //Rotatef(angle, set 1 for x-axis, set 1 for y-axis, set 1 for z-axis)
+	//5 degree Rotation, at the start, the cube will be pointed directly at you(as much as a cube can be).
+	//Degrees rotation apply on it from the x, y, z axis....all flags(1s) can be set at the same time.
+	glutWireSphere(2, 30, 30); //generate the wire sphere
 	
 	glFlush();
 	return;
