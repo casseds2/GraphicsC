@@ -1,6 +1,6 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
-#include <H:/glut.h>
+#include <glut.h>
 
 
 void display(void)
@@ -22,14 +22,14 @@ void display(void)
 	glRotatef(45.0,0.0,0.0,1.0);
 	glTranslatef(0.0,0.7,0.0);
 	glScalef(0.5,1.0,1.0);
-	
+
 	glutWireCube(0.5);
 
 
 	glPopMatrix();
 	glTranslatef(0.0,0.7,0.0);
 	glutWireCube(0.5);
-	
+
 	glFlush();
 	return;
 }
