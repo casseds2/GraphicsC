@@ -1,15 +1,15 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
-#include <H:/C/glut.h>
+#include <C:\Users\casseds95\Desktop\GraphicsC\lab3\glut.h>
 #include <math.h>
 
-/* 
+/*
 This program illustrates the use of the Idle Callback,
 in this case to carry out some animation.
 It draws a rotating square.
 */
 
-float theta = M_PI/4;
+float theta = M_PI/4; //Constant Pi
 
 void display(void)
 {
@@ -48,11 +48,11 @@ void MyIdle()
 
 	return;
 }
-	
+
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
-	glutCreateWindow("rotating square");
+	glutCreateWindow("Spinning Square");
 	glutDisplayFunc(display);
 	glutIdleFunc(MyIdle);
 

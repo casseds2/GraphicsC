@@ -1,6 +1,6 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
-#include <H:/glut.h>
+#include <C:/RailsInstaller/DevKit/mingw/lib/gcc/i686-w64-mingw32/4.7.2/include/GL/glut.h>
 
 /*
 This program illustrates a simple point light source.

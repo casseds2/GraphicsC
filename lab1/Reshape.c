@@ -1,5 +1,5 @@
 #include <GL/gl.h>
-#include <h:/C/glut.h>
+#include <C:/Users/casseds95/Desktop/GraphicsC/lab3/glut.h>
 #include <GL/glext.h>
 
 /*

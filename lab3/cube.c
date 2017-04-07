@@ -1,6 +1,6 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
-#include <H:/glut.h>
+#include <C:\Users\casseds95\Desktop\GraphicsC\lab3\glut.h>
 
 
 void display(void)
