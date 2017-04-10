@@ -12,14 +12,16 @@ void display(void)
 	glLoadIdentity();
 	gluLookAt(0.0,0.0,3.0,0.0,0.0,0.0,0.0,1.0,0.0);
 
+   //Define Both Objects
 	glutWireCube(0.5);
+   //glutWireSphere(0.5, 20, 20);
 
-	
-	glTranslatef(0.0,0.7,0.0);
+	glTranslatef(0.0,1.0,0.0);
 	glPushMatrix();
 	glutWireCube(0.5);
 
-	//glTranslatef(0.0,0.7,0.0);
+
+	glTranslatef(0.0,0.7,0.0);
 	glRotatef(45.0,0.0,0.0,1.0);
 	glTranslatef(0.0,0.7,0.0);
 	glScalef(0.5,1.0,1.0);
@@ -30,7 +32,7 @@ void display(void)
 	glPopMatrix();
 	glTranslatef(0.0,0.7,0.0);
 	glutWireCube(0.5);
-
+   
 
 	glFlush();
 	return;
@@ -59,5 +61,7 @@ int main(int argc, char **argv)
 	glutCreateWindow("cube");
 	glutDisplayFunc(display);
 	glutReshapeFunc(MyReshape);
+
+
 	glutMainLoop();
 }
