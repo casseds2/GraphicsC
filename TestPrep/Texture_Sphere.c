@@ -7,13 +7,13 @@
 This program illustrates texture mapping onto a quadric
 The texture is read in from a file 'texture.bin'
 It is mapped onto a sphere using the function gluQuadricTexture.
+
 */
-
-GLubyte image[64][64][3];
-GLfloat yRotated;
-int flag = 0;
-
-void display(void){
+	float yRotated;
+	GLubyte image[64][64][3];
+	
+void display(void)
+{
 	glClearColor(0.0,0.0,1.0,1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -21,6 +21,7 @@ void display(void){
 	glLoadIdentity();
 	gluLookAt(1.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0);
 
+	
 	glEnable(GL_TEXTURE_2D);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 64, 64, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
@@ -29,33 +30,42 @@ void display(void){
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-	glRotatef(yRotated, 0.0, 1.0, 0.0);
+	glRotatef(yRotated, 0, 1, 0);
 
 	GLUquadricObj *MySphere;
 	MySphere = gluNewQuadric();
 	gluQuadricTexture(MySphere,1);
 	gluSphere(MySphere,0.5,24,24);
-	//glutWireSphere(0.5,20,20);
-
+	
+	
 	glFlush();
 	return;
 }
 
-void idleFunc(){
-	yRotated += 0.01;
+/**Manage The Click Event**/
+void manageEvent(int value){
+	yRotated += 2.0;
 	display();
+	glutTimerFunc(25, manageEvent, 0);
 }
 
-void MyReshape(GLsizei w, GLsizei h){
+
+
+void MyReshape(GLsizei w, GLsizei h)
+{
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-//	glOrtho(-2.0,2.0,-2.0,2.0,-2.0,2.0);
 	glFrustum(-1.0,1.0,-1.0,1.0,1.0,3.0);
 	glViewport(0,0,w,h);
 	return;
 }
 
-int main(int argc, char **argv){
+
+
+
+int main(int argc, char **argv)
+{
+
 	int i,j;
 	FILE *fp;
 	char buffer[4096],*pb;
@@ -65,20 +75,23 @@ int main(int argc, char **argv){
 
 	pb = buffer;
 
-	for(i=0; i<64; i++){
-	   for(j=0; j<64; j++){
-			image[i][j][0]=(GLubyte)*pb;
-			image[i][j][1]=(GLubyte)*pb;
-			image[i][j][2]=(GLubyte)*pb;
-			pb++;
+	for(i=0; i<64; i++)
+	   for(j=0; j<64; j++)
+		{		
+		image[i][j][0]=(GLubyte)*pb;
+		image[i][j][1]=(GLubyte)*pb;
+		image[i][j][2]=(GLubyte)*pb;
+		pb++;
 		}
-	}
+
+
+	
 	glutInit(&argc, argv);
 	glutInitWindowSize(500,500);
 	glutInitWindowPosition(500,200);
 	glutCreateWindow("cube");
 	glutDisplayFunc(display);
 	glutReshapeFunc(MyReshape);
-	glutIdleFunc(idleFunc); //Will always wait on a mouse click because of Callback Function
+	glutTimerFunc(25, manageEvent, 0);
 	glutMainLoop();
 }
