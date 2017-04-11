@@ -3,12 +3,19 @@
 #include <C:/Users/casseds95/Desktop/GraphicsC/lab3/glut.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
 GLfloat yRotated;
 GLubyte image[64][64][3];
 bool click = true; //For controlling when it should spin left or right
 bool right_arrow_pressed = false;
 bool left_arrow_pressed = true;
+int menu_id;
+int window;
+int value = 0;
+bool allowedSpin = true;
+char words[6][80];
+int currentColour = 0;
 
 typedef struct material{
 	GLfloat ambient[4];
@@ -42,6 +49,13 @@ material red = {
 	{256, 1, 0, 1.0},
 	{256, 1, 0, 1.0},
 	{256, 1, 0, 1.0},
+	50
+};
+
+material blue = {
+	{0, 0, 256, 1.0},
+	{0, 0, 256, 1.0},
+	{0, 0, 256, 1.0},
 	20
 };
 
@@ -50,6 +64,41 @@ void materials(material *m){
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m->diffuse);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m->specular);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, m->shininess);
+}
+
+void menu(int num) // get the menu id
+{
+	if(num ==0)
+	{
+		glutDestroyWindow(window);
+		exit(0);
+	}
+	else
+	{
+		value = num;	
+	}
+
+	glutPostRedisplay();
+}
+void createMenu(void)
+{
+	menu_id = glutCreateMenu(menu);
+	glutAddMenuEntry("red",1);
+	glutAddMenuEntry("yellow",2);
+	glutAddMenuEntry("blue",3);
+	glutAddMenuEntry("Spin",4);
+	glutAddMenuEntry("Stop Spin",5);
+	glutAttachMenu(GLUT_MIDDLE_BUTTON);
+}
+
+/*Resets the Colour to the Previous Colour*/
+void setCurrentColour(int x){
+	if(x == 1)
+		materials(&red);
+	if(x == 2)
+		materials(&yellow);
+	if(x == 3)
+		materials(&blue);
 }
 
 void display(void)
@@ -76,10 +125,56 @@ void display(void)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
+	/*Remembers the Colour (Fixes Issue of Colour Being Reset By Stop Spin / Spin)*/
+	setCurrentColour(currentColour);
+
+	/*Change Colours Based Off of Menu Calls*/
+	switch(value)
+	{
+		case 1:
+			materials(&red);
+			currentColour = 1;
+			break;
+		case 2:
+			materials(&yellow);
+			currentColour = 2;
+			break;
+		case 3:
+			materials(&blue);
+			currentColour = 3;
+			break;
+		case 4:
+			allowedSpin = true;
+			break;
+		case 5:
+			allowedSpin = false;
+			break;	
+	}
+
+	/*Insert Writing*/
+	glPushMatrix();
+		int i;
+		int length;
+		glColor3f(256.0, 0.0, 0.0);
+		glTranslatef(0.0, 1.5, 0.0);
+		glScalef(0.003, 0.003, 0.003);
+		length = (int)strlen(words[0]);
+		glTranslatef(-(length*37), -(200), 0.0);
+		//glRotatef(yRotated, 0, 1, 0);
+		for(i = 0; i < length; i++){
+			glutStrokeCharacter(GLUT_STROKE_ROMAN, words[0][i]);
+		}
+	glPopMatrix();
+
 	/*Draw The Sun*/
     glPushMatrix();
-	    materials(&red);
 	    glutSolidSphere(0.5, 20, 20);
+	glPopMatrix();
+
+	glPushMatrix();
+		materials(&black);
+		glRotatef(yRotated, 0, 1, 0);
+		glutWireCube(0.4);
 	glPopMatrix();	
 
 	/*Draw a Lenna Planet*/
@@ -100,13 +195,18 @@ void display(void)
 
 /**Manage The Click Event**/
 void manageRotationEvent(){
-	if(!click && right_arrow_pressed == true){
+	if(!click && right_arrow_pressed == true && allowedSpin == true){
 		yRotated -= 2.0;
 		display();
 		glutTimerFunc(25, manageRotationEvent, 0);
 	}
-	if(click && left_arrow_pressed == true){
+	if(click && left_arrow_pressed == true && allowedSpin == true){
 		yRotated += 2.0;
+		display();
+		glutTimerFunc(25, manageRotationEvent, 0);
+	}
+	if(allowedSpin == false){
+		yRotated += 0;
 		display();
 		glutTimerFunc(25, manageRotationEvent, 0);
 	}
@@ -122,7 +222,7 @@ void MyReshape(GLsizei w, GLsizei h)
 	return;
 }
 
-/*Events handled bby clicks*/
+/*Events handled by clicks*/
 void MyMouse(GLint button, GLint state, GLint x, GLint y)
 {
 	if(state == GLUT_DOWN && button == GLUT_LEFT_BUTTON){
@@ -135,6 +235,7 @@ void MyMouse(GLint button, GLint state, GLint x, GLint y)
 	}
 }
 
+/*Minor Function to Load the Lenna Image*/
 void loadLenna(){
 	int i,j;
 	FILE *fp;
@@ -156,7 +257,8 @@ void loadLenna(){
 	}
 }
 
-void manageKeyboardEvent(int key, int x, int y){ //right = 262; left = 263
+/*Manage a Left or Right Arrow Click*/
+void manageKeyboardEvent(int key, int x, int y){
 	if(key == GLUT_KEY_RIGHT){
 		right_arrow_pressed = true;
 		left_arrow_pressed = false;
@@ -176,10 +278,12 @@ int main(int argc, char **argv)
 	glutInitWindowSize(500,500);
 	glutInitWindowPosition(500,200);
 	glutCreateWindow("Solar System");
+	strcpy(words[0], "Marks plz?");
 	glutDisplayFunc(display);
 	glutReshapeFunc(MyReshape);
 	glutMouseFunc(MyMouse);
 	glutSpecialFunc(manageKeyboardEvent);
 	glutTimerFunc(25, manageRotationEvent, 0);
+	createMenu();
 	glutMainLoop();
 }

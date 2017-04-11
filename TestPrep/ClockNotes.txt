@@ -1,0 +1,6 @@
+1. Draw Sphere
+2. Make String Array of size 12 with numbers [1-12] stored in it.
+3. Map Strings with glTranslatef()
+4. Draw Hand in, big cyclinder and small cyclinder.
+5. Spin hands and everytime the big hand is angle%360, increment the angle the small hadn is at by 30 degrees(360/12hours).
+6. Colour the sphere white and the hands black.
