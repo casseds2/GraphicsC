@@ -16,6 +16,7 @@ int value = 0;
 bool allowedSpin = true;
 char words[6][80];
 int currentColour = 0;
+double moveX, moveY, moveZ=5;
 
 typedef struct material{
 	GLfloat ambient[4];
@@ -88,6 +89,8 @@ void createMenu(void)
 	glutAddMenuEntry("blue",3);
 	glutAddMenuEntry("Spin",4);
 	glutAddMenuEntry("Stop Spin",5);
+	glutAddMenuEntry("Mirror World",6);
+	glutAddMenuEntry("Return To Normal World",7);
 	glutAttachMenu(GLUT_MIDDLE_BUTTON);
 }
 
@@ -103,14 +106,14 @@ void setCurrentColour(int x){
 
 void display(void)
 {
-	glClearColor(0.0,0.0,0.0,0.0);
+	glClearColor(0.0,0.0,1.0,1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glEnable(GL_TEXTURE_2D);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(-1.0,0.0,5.0,0.0,0.0,0.0,0.0,1.0,0.0);
+	gluLookAt(0,0,moveZ,0.0,0.0,0.0,0.0,1.0,0.0);
 
 	/*Define Light*/
 	GLfloat sunlightDiffuse[] = {256.0f, 0.0f, 0.0f};
@@ -148,8 +151,16 @@ void display(void)
 			break;
 		case 5:
 			allowedSpin = false;
+			break;
+		case 6:
+			moveZ = -5;
+			break;
+		case 7:
+			moveZ = 5;	
 			break;	
 	}
+
+	//glTranslatef(moveX, moveY, moveZ);
 
 	/*Insert Writing*/
 	glPushMatrix();
@@ -173,7 +184,7 @@ void display(void)
 
 	glPushMatrix();
 		materials(&black);
-		glRotatef(yRotated, 0, 1, 0);
+		glRotatef(yRotated, 0, 0, 1);
 		glutWireCube(0.4);
 	glPopMatrix();	
 
@@ -271,6 +282,30 @@ void manageKeyboardEvent(int key, int x, int y){
 	}
 }
 
+void manageKeyCharEvent(unsigned char key, int x, int y){
+	switch(key){
+		case 'w':
+			moveY += 0.2;
+			break;
+		case 's':
+			moveY -= 0.2;
+			break;
+		case 'a':
+			moveX -= 0.2;
+			break;
+		case 'd':
+			moveX += 0.2;
+			break;
+		case 'q':
+			moveZ += 0.2;
+			break;
+		case 'z':
+			moveZ -= 0.2;
+			break;		
+		default:return;				
+	}
+}
+
 int main(int argc, char **argv)
 {
 	loadLenna();
@@ -283,6 +318,7 @@ int main(int argc, char **argv)
 	glutReshapeFunc(MyReshape);
 	glutMouseFunc(MyMouse);
 	glutSpecialFunc(manageKeyboardEvent);
+	glutKeyboardFunc(manageKeyCharEvent);
 	glutTimerFunc(25, manageRotationEvent, 0);
 	createMenu();
 	glutMainLoop();
